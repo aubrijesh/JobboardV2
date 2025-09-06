@@ -1,6 +1,7 @@
 const express = require('express');
 const { google } = require('googleapis');
 const router = express.Router();
+require('dotenv').config()
 
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID || 'YOUR_CLIENT_ID';
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || 'YOUR_CLIENT_SECRET';

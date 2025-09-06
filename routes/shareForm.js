@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
 const {executeQuery} = require('../db');
+require('dotenv').config();
+
 
 // GET /forms/:id/all-links - render all_links.hbs page
 router.get('/forms/:id/all-links', async (req, res) => {

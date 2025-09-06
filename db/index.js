@@ -1,4 +1,5 @@
 const mysql = require('mysql2/promise');
+require('dotenv').config()
 
 // Update these with your local MySQL credentials
 const pool = mysql.createPool({
