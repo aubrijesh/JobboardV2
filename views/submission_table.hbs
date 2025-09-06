@@ -1,0 +1,72 @@
+<!-- Submission Data Table Section -->
+<style>
+  .body {
+    font-size: 14px;
+    margin: 0;
+  }
+  .kanban-item {
+    border-radius: 5px;
+    padding: 0 !important;  
+  }
+  .kanban-board {
+    border: 1px solid white;
+    background: #607D8B;
+    margin: 0;
+    /* border-radius: 5px; */
+    margin: 0 !important;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  .kanban-board-header.kanban-stage {
+    padding:0;
+  }
+  .kanban-board header .kanban-title-board > div {
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+}
+  .kanban-board-header .kanban-title-board {
+    padding: 12px;
+    /* border-radius: 0px; */
+    color: #fff;
+    text-align: center;
+    font-weight: 600;
+  }
+</style>
+<div id="submission-table-container">
+  <div class="header" style="display: flex;align-items:center;justify-content:space-between;">
+    <div class="left" style="display: flex;align-items:center;">
+      <div class="logo-block" style="width: 60px; display: flex; flex-direction: column; gap: 8px;">
+          <img src="{{{logo_url}}}" alt="logo" style="width: 60%;padding: 10px;">
+      </div>
+      <h3 style="margin: 0;font-weight:600;color:#222;">Candidates</h3>
+    </div>
+    <button id="show-kanban-btn" style="margin-left:18px;background:#3498db;color:#fff;border:none;border-radius:3px;padding:6px 18px;cursor:pointer;">Kanban</button>
+  </div>
+  
+  <div id="jspreadsheet"></div>
+</div>
+<!-- jspreadsheet CDN -->
+ <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://bossanova.uk/jspreadsheet/v5/jspreadsheet.js"></script>
+<link rel="stylesheet" href="https://bossanova.uk/jspreadsheet/v5/jspreadsheet.css" type="text/css" />
+<script src="https://jsuites.net/v5/jsuites.js"></script>
+<link rel="stylesheet" href="https://jsuites.net/v5/jsuites.css" type="text/css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons" />
+<script src="js/submission_table.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jkanban@1.3.1/dist/jkanban.min.css">
+<script src="https://cdn.jsdelivr.net/npm/jkanban@1.3.1/dist/jkanban.min.js"></script>
+
+<div id="submission-kanban-sidebar" style="display:none;position:fixed;top:0;right:0;width:70vw;height:100vh;background:#fff;z-index:9999;box-shadow:-2px 0 16px rgba(0,0,0,0.12);overflow-y:auto;transition:right 0.3s;">
+  <div style="padding:18px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;">
+    <span style="font-size:20px;font-weight:600;">Kanban Board</span>
+    <button id="kanban-close-btn" style="background:#e74c3c;color:#fff;border:none;border-radius:3px;padding:6px 18px;cursor:pointer;">Close</button>
+  </div>
+  <div id="jkanban-board-content" style="padding:5px;"></div>
+</div>
+<script>
+ 
+
+
+
+// Example usage: renderJKanbanBoard(submissionsArray);
+</script>

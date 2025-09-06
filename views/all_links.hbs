@@ -1,0 +1,142 @@
+<html>
+<head>
+    <title>All Share Links</title>
+    <link rel="stylesheet" 
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <style>
+        body {
+            background: #f7f8fa;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            font-size: 14px;
+        }
+        .container {
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: inset 4px 1px 12px rgb(109 147 165 / 7%);
+            padding: 18px;
+            height: calc(100% - 40px);
+            border: 1px solid #b5b5b5;
+            margin: 10px;
+        }
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 8px 10px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f5f5f5;
+            font-weight: 500;
+            color: #444;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:nth-child(even) td {
+            background: #fbfbfc;
+        }
+        tr:hover td {
+            background: #f0f4fa;
+        }
+        a {
+            color: #007bff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <input type="hidden" id="form-id" value="{{formId}}" />
+     <header style="display: flex; align-items: center; justify-content: flex-start;border-bottom: 1px solid #e0e0e0;">
+        <div class="logo-block" style="width: 60px; display: flex; flex-direction: column; gap: 8px;">
+        <img src="{{{logo_url}}}" alt="logo" style="width: 60%;padding: 10px;">
+        </div>
+        <div class="title-block" style="width: calc(100% - 100px)">
+            <h3 style="margin: 0;">All Share Links</h3>
+        </div>
+    </header>
+    <div class="container">
+        <table style="width:100%;">
+            <thead>
+                <tr style="background:#f5f5f5;">
+                    <th style="padding:6px 8px;text-align:left;">Name</th>
+                    <th style="padding:6px 8px;text-align:left;">Link</th>
+                    <th style="padding:6px 8px;text-align:left;">Created</th>
+                    <th style="padding:6px 8px;text-align:left;">Submissions</th>
+                </tr>
+            </thead>
+            <tbody id="all-links-table-body">
+            </tbody>
+        </table>
+        <div id="link-modal" class="modal" style="display:none;max-width:400px;">
+            <h4 id="link-modal-title" style="margin-top: 5px;">Public Link</h4>
+            <label id="share-link" style="margin-bottom: 20px;font-size: 12px;display: block;">Link:</label>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    
+    <script>
+    $(document).ready(function() {
+        // Get formId from hidden input
+        var formId = document.getElementById('form-id').value;
+        if (!formId) return alert('No form selected.');
+        fetch(`/api/forms/${formId}/shares-with-submissions`)
+            .then(r => r.json())
+            .then(resp => {
+                if (resp.success && Array.isArray(resp.links)) {
+                    var rows = resp.links.map(function(link) {
+                        var subUrl = `/submissions?share_id=${link.id}`;
+                        return `<tr><td>${link.name || ''}</td><td style="display:flex;justify-content:space-between;">
+                        <a href="${link.url}" target="_blank">Link</a>
+                        <span>
+                        <a style="margin-left: 5px;margin-right: 5px;" class="copy-link" data-link="${link.url}"><i class="fa fa-copy" aria-hidden="true"></i></a>
+                        <a style="margin-left: 5px;" class="view-link" data-link="${link.url}" data-name="${link.name}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                        </span>
+                        </td><td>${link.created_at ? new Date(link.created_at).toLocaleString() : ''}</td><td><a href="${subUrl}" target="_blank">${link.submissions || 0}</a></td></tr>`;
+                    }).join('');
+                    $('#all-links-table-body').html(rows);
+                } else {
+                    $('#all-links-table-body').html('<tr><td colspan="4">No links found.</td></tr>');
+                }
+            });
+
+        $(document).off('click','.view-link').on('click','.view-link', function() {
+            var link = $(this).data('link');
+            var name = $(this).data('name');
+            $('#share-link').text(link);
+            $('#link-modal-title').text(`${name || "Link"}`);
+            $('#link-modal').modal();
+        });
+        $(document).off('click','.copy-link').on('click','.copy-link', function() {
+            var link = $(this).data('link');
+            var el = document.createElement('textarea');
+            el.value = link;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            Toastify({
+                text: 'Link copied to clipboard.',
+                duration: 3000
+            }).showToast();
+        });
+    });
+    </script>
+</body>
+</html>

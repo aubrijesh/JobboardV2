@@ -1,0 +1,314 @@
+<html>
+<head>
+    <!-- Quill styles for public form -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet" />
+    <title>{{form.name}} - Public Form</title>
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    <style>
+        .container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        #public-job-form {
+            width: 100%;
+            padding: 30px;
+        }
+        .quill-editor-container {
+            border:none !important;
+        }
+        .form-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 18px;
+            max-width:400px;
+        }
+        .form-tab {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            background: transparent;
+            border-radius: 0;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .form-tab.active {
+            border-bottom: 3px solid #6c63ff;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="public-form-body">
+
+    <input type="hidden" value='{{{fields}}}' id="form-value"/>
+    <input type="hidden" value='{{{shareId}}}' id="share-id"/>
+    <header>
+        <div class="logo-block" style="width: 60px; display: flex; flex-direction: column; gap: 8px;">
+           <img src="{{{logo_url}}}" alt="logo" style="width: 60%;padding: 10px;">
+        </div>
+         <div class="title-block" style="width: calc(100% - 100px)">
+            {{#if form}}
+                <h3 style="margin:0;font-weight:400;color:#444;font-size:20px;width:100%">{{profieName}}</h3>
+            {{/if}}
+        </div>
+    </header>
+    <div class="container preview-enabled" style="max-width:700px;margin:40px auto 0 auto;">
+        <div class="form-tabs">
+          <button id="tab-overview" class="form-tab active">Overview</button>
+          <button id="tab-application" class="form-tab">Application</button>
+        </div>
+        <div id="tab-content-overview" class="tab-content active">
+          <div id="jobdesc-content">{{{jobdesc}}}</div>
+          <button class="apply-btn" id="apply-btn">Apply</button>
+        </div>
+        <div id="tab-content-application" class="tab-content">
+          <form id="public-job-form">
+            <div id="public-form-fields">
+            {{#each droppedFields}}
+              {{#if (eq type "editor")}}
+                <div class="form-field" data-id="{{id}}">
+                  <label>{{label}}</label>
+                  <div class="quill-view" id="{{id}}">{{{value}}}</div>
+                </div>
+              {{else}}
+                {{{getFieldHtml this}}}
+              {{/if}}
+            {{/each}}
+            </div>
+            <button type="submit" style="margin-bottom: 30px; padding:10px 28px; background:#007bff; color:#fff; border:none; border-radius:5px; font-size:16px; font-weight:500; cursor:pointer; margin-top:18px;">Submit Application</button>
+        </form>
+        <div id="public-form-success" style="display:none;margin-top:24px;color:green;font-weight:500;font-size:18px;">Thank you for your submission!</div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="/js/fields_helper.js"></script>
+    <!-- Quill library for public form -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+    <script>
+        function encodeJsonBase64(json) {
+            return btoa(unescape(encodeURIComponent(JSON.stringify(json))));
+        }
+
+        // Decode base64 to JSON
+        function decodeJsonBase64(str) {
+            return JSON.parse(decodeURIComponent(escape(atob(str))));
+        }
+    // Render fields from server-passed fields array
+    const fields = decodeJsonBase64(document.getElementById('form-value').value);
+
+    // Use getFieldHtml from fields_helper.js for consistent rendering
+    function renderField(field) {
+        if (field.type === 'button') return '';
+        return typeof getFieldHtml === 'function' ? getFieldHtml(field) : '';
+    }
+    $(function() {
+        $('#public-form-fields').html(fields.map(renderField).join(''));
+        $('select').select2 && $('select').select2({ width: '100%' });
+        // Initialize Quill for editor fields
+        window.publicQuillEditors = {};
+        fields.forEach(function(field) {
+            if(field.type === 'editor') {
+                var quill = new Quill(`#${field.id}`, {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: false
+                    }
+                });
+                window.publicQuillEditors[field.id] = quill;
+                // Set initial value if present
+                if(field.value) {
+                    quill.root.innerHTML = field.value;
+                }
+                // Hide toolbar if present (for safety)
+                var toolbar = quill.getModule('toolbar');
+                if(toolbar && toolbar.container) {
+                    toolbar.container.style.display = 'none';
+                }
+            }
+        });
+        $('#public-job-form').on('submit', function(e) {
+            e.preventDefault();
+            $('#public-job-form button[type=submit]').prop('disabled', true);
+
+            // Initialize Editor.js for editor fields
+            let editorInstances = {};
+            fields.forEach(function(field) {
+                if (field.type === 'editor') {
+                    // Load Editor.js from CDN if not loaded
+                    if (!window.EditorJS) {
+                        var script = document.createElement('script');
+                        script.src = 'https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest';
+                        script.onload = function() {
+                            createEditorInstance(field);
+                        };
+                        document.body.appendChild(script);
+                    } else {
+                        createEditorInstance(field);
+                    }
+                }
+            });
+
+            function createEditorInstance(field) {
+                editorInstances[field.id] = new EditorJS({
+                    holder: field.id,
+                    placeholder: field.label || 'Write job description...',
+                    tools: {
+                        header: {
+                            class: window.Header || (() => {}),
+                            inlineToolbar: true
+                        },
+                        list: {
+                            class: window.List || (() => {}),
+                            inlineToolbar: true
+                        }
+                    }
+                });
+            }
+
+            var form = document.getElementById('public-job-form');
+            var formDataObj = {};
+            // Collect all non-file fields into an object
+            $(form).serializeArray().forEach(function(f) { formDataObj[f.name] = f.value; });
+            var shareId = document.getElementById('share-id').value;
+            var shareToken = window.location.pathname.split("/").pop(); // If shareId is actually the share_token, otherwise adjust accordingly
+            var fd = new FormData();
+
+            // Collect Editor.js data
+            let editorPromises = [];
+            Object.keys(editorInstances).forEach(function(editorId) {
+                editorPromises.push(
+                    editorInstances[editorId].save().then(function(outputData) {
+                        formDataObj[editorId] = JSON.stringify(outputData);
+                    })
+                );
+            });
+
+            /* Promise.all(editorPromises).then(function() {
+                var shareId = document.getElementById('share-id').value;
+                var shareToken = window.location.pathname.split("/").pop(); // If shareId is actually the share_token, otherwise adjust accordingly
+                var fd = new FormData();
+                // Append all non-file fields as a JSON string
+                fd.append('formData', JSON.stringify(formDataObj));
+                // Append file inputs (support multiple files if needed)
+                $(form).find('input[type="file"]').each(function() {
+                    var input = this;
+                    if (input.files && input.files.length > 0) {
+                        if (input.multiple) {
+                            for (var i = 0; i < input.files.length; i++) {
+                                fd.append(input.name, input.files[i]);
+                            }
+                        } else {
+                            fd.append(input.name, input.files[0]);
+                        }
+                    }
+                });
+                fetch('/api/save-form', {
+                    method: 'POST',
+                    body: fd,
+                    headers: { 'x-share-token': shareToken }
+                })
+                .then r => r.json())
+                .then(resp => {
+                    if (resp.success) {
+                        $('#public-job-form').hide();
+                        $('#public-form-success').show();
+                    } else {
+                        alert('Submission failed: ' + (resp.error || 'Unknown error'));
+                        $('#public-job-form button[type=submit]').prop('disabled', false);
+                    }
+                })
+                .catch(() => {
+                    alert('Submission failed.');
+                    $('#public-job-form button[type=submit]').prop('disabled', false);
+                });
+            }); */
+            // Append all non-file fields as a JSON string
+            fd.append('formData', JSON.stringify(formDataObj));
+            // Append file inputs (support multiple files if needed)
+            $(form).find('input[type="file"]').each(function() {
+                var input = this;
+                if (input.files && input.files.length > 0) {
+                    if (input.multiple) {
+                        for (var i = 0; i < input.files.length; i++) {
+                            fd.append(input.name, input.files[i]);
+                        }
+                    } else {
+                        fd.append(input.name, input.files[0]);
+                    }
+                }
+            });
+            fetch('/api/save-form', {
+                method: 'POST',
+                body: fd,
+                headers: { 'x-share-token': shareToken }
+            })
+            .then(r => r.json())
+            .then(resp => {
+                if (resp.success) {
+                    $('#public-job-form').hide();
+                    $('#public-form-success').show();
+                } else {
+                    alert('Submission failed: ' + (resp.error || 'Unknown error'));
+                    $('#public-job-form button[type=submit]').prop('disabled', false);
+                }
+            })
+            .catch(() => {
+                alert('Submission failed.');
+                $('#public-job-form button[type=submit]').prop('disabled', false);
+            });
+        });
+        // Fix 'Add More' for education blocks
+    $(document).on('click', '.add-education-block', function(e) {
+        e.preventDefault();
+        var $repeat = $(this).closest('.education-repeat-blocks');
+        var $lastBlock = $repeat.find('.education-block').last();
+        var idx = $repeat.find('.education-block').length;
+        var newBlock = $lastBlock.clone();
+        // Clear values in new block
+        newBlock.find('input, select').val('');
+        newBlock.attr('data-idx', idx);
+        // Update name attributes for new block
+        newBlock.find('input.education-name').attr('name', 'education_name_' + idx);
+        newBlock.find('select.education-degree').attr('name', 'degree_' + idx);
+        newBlock.find('input.education-percentage').attr('name', 'percentage_' + idx);
+        newBlock.find('select.education-university').attr('name', 'university_' + idx);
+        // Show remove button if more than one block
+        newBlock.find('.remove-education-block').show();
+        $repeat.append(newBlock);
+    });
+    $(document).on('click', '.remove-education-block', function(e) {
+        e.preventDefault();
+        var $block = $(this).closest('.education-block');
+        $block.remove();
+    });
+    // Tab functionality
+       function setActiveTabBorder() {
+            $('.form-tab').css('border-bottom', 'none');
+            $('.form-tab.active').css('border-bottom', '3px solid #6c63ff');
+        }
+      $('#tab-overview').on('click', function() {
+        $('.form-tab').removeClass('active');
+        $(this).addClass('active');
+        $('.tab-content').show();
+        $('#tab-content-application').hide();
+        setActiveTabBorder();
+      });
+      $('#apply-btn,#tab-application').on('click', function() {
+            $('.form-tab').removeClass('active');
+            $("#tab-application").addClass('active');
+            $('.tab-content').hide();
+            $('#tab-content-application').show();
+            setActiveTabBorder();
+        });
+
+    });
+    </script>
+</body>
+</html>

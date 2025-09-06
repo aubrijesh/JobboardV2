@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  height: 100%;
+}
+.container .fields{
+  visibility: hidden;
+}
+.container .form-field {
+  border: none;
+  background: transparent;
+}
+.fields {
+  width: 150px;
+  padding: 0 !important;
+  height: calc(100% - 30px);
+}

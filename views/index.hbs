@@ -1,0 +1,191 @@
+<html>
+
+<head>
+    <title>Job Form Builder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" >
+    <link rel="stylesheet" href="css/index.css" >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+
+        <!-- Theme included stylesheets -->
+        <link
+        href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css"
+        rel="stylesheet"
+        />
+        <link
+        href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.bubble.css"
+        rel="stylesheet"
+        />
+</head>
+
+<body class="edit-form-body">
+    <header>
+         <div class="logo-block" style="width: 60px; display: flex; flex-direction: column; gap: 8px;margin-right: 20px;">
+           <img src="{{{logo_url}}}" alt="logo" style="width: 60%;padding: 10px;">
+        </div>
+        <div class="title-block" style="width: calc(100% - 100px)">
+            {{#if form}}
+                <h3 style="margin:0;font-weight:400;color:#444;font-size:20px;width:100%">{{form.name}}</h3>
+            {{/if}}
+        </div>
+        <div class="right-block" style="padding: 5px 10px;align-items: center;display: flex;width: 800px;justify-content: flex-end;align-items: center;">
+            <button id="template-btn"
+                style="padding:5px 10px;margin-right:10px; background:#6c63ff; color:#fff; border:none; border-radius:4px; font-size:14px; cursor:pointer;">Templates</button>
+            <button id="preview-toggle"
+                style="padding:5px 10px;margin-right:10px; background:#007bff; color:#fff; border:none; border-radius:4px; font-size:14px; cursor:pointer;">Preview</button>
+            <button id="share-form-btn"
+                style="padding:5px 10px; background:#28a745; color:#fff; border:none; border-radius:4px; font-size:14px; cursor:pointer;">Share</button>
+    <!-- Templates Modal -->
+    <div id="templates-modal" class="modal" style="display:none;max-width:70%;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <h4 style="margin:0;">Choose a Form Template</h4>
+          <input type="text" id="template-search" placeholder="Search templates..." style="margin-left:16px;padding:6px 12px;border:1px solid #ccc;border-radius:4px;width:220px;">
+        </div>
+        <ul id="template-list" style="    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: calc(100% - 50px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;"></ul>
+    </div>
+           
+            <span id="settings-icon" title="Show all share links" style="margin-left:18px;cursor:pointer;font-size:22px;display:inline-block;vertical-align:middle;">
+                <i class="fa-solid fa-gear"></i>
+                <div id="settings-menu" style="font-size: 12px;display:none;position:absolute;right:10px;top:60px;z-index:1000;background:#fff;border:1px solid #ddd;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.08);min-width:160px;">
+                    <div class="settings-menu-item" id="show-all-links" style="padding:10px 18px;cursor:pointer;">All Links</div>
+                    <div class="settings-menu-item" id="show-submissions" style="padding:10px 18px;cursor:pointer;">Submissions</div>
+                </div>
+            </span>
+            <!-- All Share Links Modal -->
+            <div id="all-links-modal" class="modal" style="display:none;max-width:600px;">
+                <h4>All Share Links for this Form</h4>
+                <table style="width:100%;border-collapse:collapse;">
+                    <thead>
+                        <tr style="background:#f5f5f5;">
+                            <th style="padding:6px 8px;text-align:left;">Name</th>
+                            <th style="padding:6px 8px;text-align:left;">Link</th>
+                            <th style="padding:6px 8px;text-align:left;">Created</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-links-table-body">
+                    </tbody>
+                </table>
+            </div>
+        
+        </div>
+    </header>
+    <div class="container" id="main-container">
+        <!-- Add search box above available fields list -->
+        
+        <!-- Available Fields -->
+        <div class="fields">
+            <div class="fields-header">
+                <h4>Common fields</h4>
+                <input id="field-search-box" type="text" placeholder="Search fields..." style="width:100%;margin-bottom:8px;padding:6px 10px;border-radius:4px;border:1px solid #ccc;">
+            </div>
+            <div id="available-fields"></div>
+        </div>
+
+        <!-- Form Preview -->
+        <div class="form-preview">
+            <!-- <h3>Form Preview</h3> -->
+
+            <div class="form-tabs" style="display:flex;gap:0; margin-bottom:18px;max-width:400px;">
+              <button id="tab-overview" class="form-tab active" style="flex:1;padding:10px 0;border:none;background:transparent;border-radius:0;font-weight:500;cursor:pointer;">Overview</button>
+              <button id="tab-application" class="form-tab" style="flex:1;padding:10px 0;border:none;background:transparent;border-radius:0;font-weight:500;cursor:pointer;">Application</button>
+            </div>
+            <div id="tab-content-overview" class="tab-content" style="display:block;">
+              <div id="jobdesc-editor" style="min-height:180px;"></div>
+              <button class="apply-btn" id="apply-btn">Apply</button>
+            </div>
+            <div id="tab-content-application" class="tab-content" style="display:none;">
+              <form id="job-form">
+                <div id="drop-placeholder" class="ui-droppable drop-placeholder">
+                  Drag fields here
+                </div>
+                <!-- Editor.js field preview container (will be rendered by JS if field type is editor) -->
+              </form>
+            </div>
+        </div>
+
+        <!-- Properties Panel -->
+        <div class="properties">
+            <div class="property-header">
+                <h3>Properties</h3>
+                <button id="delete-field-btn" class="delete-field-btn hide" data-delete-id="" title="Delete field">✕</button>
+            </div>
+            <div id="field-properties" class="property-body">Select a field to edit</div>
+        </div>
+    </div>
+      <!-- Share Modal -->
+    <div id="share-modal" class="modal" style="display:none;max-width:400px;">
+        <h4>Public Link</h4>
+        <div class="name-block">
+            <label for="share-modal-name" style="margin-bottom: 8px;display:inline-block">Profile Name:</label>
+            <input type="text" id="share-modal-name" placeholder="Eg: Software Engineer 2" style="width:100%;margin-bottom:10px;">
+        </div>
+        <div class="generate-link hide">
+            <label for="share-modal-link" style="margin-bottom: 8px;display:inline-block">Link:</label>
+            <i class="fa-solid fa-copy" id="copy-link-icon" title="Copy to clipboard" style="cursor:pointer;margin-left:10px;color:#007bff;"></i>
+            <input type="text"  id="share-modal-link" readonly style="width:100%;margin-bottom:10px;">
+
+        </div>
+        <div class="existing-block-message hide" style="margin-bottom: 10px;
+    color: #555;
+    font-size: 12px;
+    background-color: #f8f883;
+    padding: 5px;
+    border-radius: 5px;">
+            <span>You have already generated a share link for this profile. To create a new link, please change the profile name and click "Generate Link" again.</span>
+            <button id="regenerate-link-btn" style="    font-weight: bold;
+    text-decoration: underline;
+    color: #319f0e;
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    margin-left: 10px;
+    cursor: pointer;">Regenerate</button>
+        </div>
+        <button id="save-share-btn" style="background:#28a745;color:#fff;padding:7px 18px;border:none;border-radius:4px;">Generate Link</button>
+    </div>
+        <!-- Main Quill library -->
+<script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <script src="data/data.js"></script>
+    <script src="js/fields_helper.js"></script>
+    <script src="js/index.js"></script>
+    <script src="data/template.js"></script>
+    <script>
+    
+     // Quill editor initialization for dropped fields
+        window.quillEditors = {};
+        function initQuillEditors(fields) {
+            fields.forEach(function(field) {
+                if(field.type === 'editor') {
+                    var quill = new Quill(`#${field.id}`, {
+                        theme: 'snow',
+                        modules: {
+                            toolbar: [
+                                [{ header: [1, 2, false] }],
+                                ['bold', 'italic', 'underline'],
+                                ['link', 'blockquote', 'code-block', 'image'],
+                                [{ list: 'ordered' }, { list: 'bullet' }]
+                            ]
+                        }
+                    });
+                    window.quillEditors[field.id] = quill;
+                }
+            });
+        }
+
+        // Call initQuillEditors after rendering fields in

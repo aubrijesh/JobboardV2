@@ -1,0 +1,65 @@
+* {
+    box-sizing: border-box;
+}
+.job-board  {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+}
+
+.job-board h1 {
+    text-align: center;
+    color: #333;
+}
+
+.job-listing {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.job-listing h2 {
+    margin-top: 0;
+    color: #007BFF;
+}
+
+.job-item {
+    border: 1px solid #e1e1e1;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    margin-right: 10px;
+    width: calc(50% - 10px);
+}
+
+
+
+
+/* job edit part */
+.job-edit {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+}
+
+.fields {
+    margin-bottom: 15px;
+}
+
+.fields label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.fields input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
