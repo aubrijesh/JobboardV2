@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -11,6 +11,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
+
 
 
 var indexRouter = require('./routes/index');
@@ -81,9 +82,10 @@ app.post('/auth/register', async (req, res) => {
   const channelId = channelResult.insertId;
   req.session.user_id = userId;
   req.session.channel_id = channelId;
-  req.session.save(() => {
-    res.redirect('/forms');
-  });
+   res.redirect('/forms');
+  // req.session.save(() => {
+   
+  // });
 } catch (err) {
   res.redirect('/signup');
 }
@@ -120,9 +122,10 @@ app.post('/auth/local', passport.authenticate('local', {
   req.session.user_id = req.user.id;
   req.session.channel_id = req.user.channel_id;
   // Ensure session is saved before redirect
-  req.session.save(() => {
-    res.redirect('/forms');
-  });
+  res.redirect('/forms');
+  // req.session.save(() => {
+    
+  // });
 });
 
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -165,9 +168,10 @@ app.get('/auth/google/callback',
     req.session.user_id = userId;
     req.session.channel_id = channelId;
     // Ensure session is saved before redirect
-    req.session.save(() => {
-      res.redirect('/forms');
-    });
+    res.redirect('/forms');
+    // req.session.save(() => {
+      
+    // });
   }
 );
 
