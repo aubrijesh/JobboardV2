@@ -16,7 +16,7 @@ const bcrypt = require('bcrypt');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var googleRouter = require('./routes/google');
-var session = require('express-session');
+var session = require('cookie-session');
 const shareFormRouter = require('./routes/shareForm');
 const {executeQuery} = require('./db'); // adjust path as needed
 
