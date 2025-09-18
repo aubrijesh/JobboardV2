@@ -37,9 +37,13 @@
             });
             const data = await res.json();
             if (res.ok) {
-                messageDiv.style.color = '#28a745';
-                messageDiv.textContent = 'Signup successful! You can now sign in.';
-                document.getElementById('signupForm').reset();
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    messageDiv.style.color = '#28a745';
+                    messageDiv.textContent = 'Signup successful! You can now sign in.';
+                    document.getElementById('signupForm').reset();
+                }
             } else {
                 messageDiv.textContent = data.error || 'Signup failed.';
             }

@@ -72,7 +72,7 @@ app.post('/auth/register', async (req, res) => {
   if (!email || !password) return res.redirect('/signup');
   try {
     const [existing] = await executeQuery('SELECT id FROM users WHERE email = ?', [email]);
-    if (existing.length > 0) return res.redirect('/signup');
+    if (existing.length > 0) return res.redirect('/signin');
     const hash = await bcrypt.hash(password, 10);
     // Insert user without channel_id first
     const [userResult] = await executeQuery('INSERT INTO users (email, password) VALUES (?, ?)', [email, hash]);
