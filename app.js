@@ -71,24 +71,31 @@ app.post('/auth/register', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.redirect('/signup');
   try {
-   
     const [existing] = await executeQuery('SELECT id FROM users WHERE email = ?', [email]);
     if (existing.length > 0) return res.redirect('/signup');
     const hash = await bcrypt.hash(password, 10);
-  const [userResult] = await executeQuery('INSERT INTO users (email, password) VALUES (?, ?)', [email, hash]);
-  const userId = userResult.insertId;
-  // Create channel for user
-  const [channelResult] = await executeQuery('INSERT INTO channels (user_id) VALUES (?)', [userId]);
-  const channelId = channelResult.insertId;
-  req.session.user_id = userId;
-  req.session.channel_id = channelId;
-   res.redirect('/forms');
-  // req.session.save(() => {
-   
-  // });
-} catch (err) {
-  res.redirect('/signup');
-}
+    // Insert user without channel_id first
+    const [userResult] = await executeQuery('INSERT INTO users (email, password) VALUES (?, ?)', [email, hash]);
+    const userId = userResult.insertId;
+
+    // Get the next channel number
+    const [channels] = await executeQuery('SELECT COUNT(*) as count FROM channels');
+    const channelNumber = (channels[0].count || 0) + 1;
+    const channelName = `channel${channelNumber}`;
+
+    // Create channel for user with name channelN
+    const [channelResult] = await executeQuery('INSERT INTO channels (user_id, name) VALUES (?, ?)', [userId, channelName]);
+    const channelId = channelResult.insertId;
+
+    // Update user with channel_id
+    await executeQuery('UPDATE users SET channel_id = ? WHERE id = ?', [channelId, userId]);
+
+    req.session.user_id = userId;
+    req.session.channel_id = channelId;
+    res.redirect('/forms');
+  } catch (err) {
+    res.redirect('/signup');
+  }
 });
 
 // Update local strategy to use bcrypt
@@ -96,14 +103,11 @@ passport.use(new LocalStrategy(
   async (username, password, done) => {
     try {
      
-  const [rows] = await executeQuery('SELECT * FROM users WHERE username = ? OR email = ?', [username, username]);
+  const [rows] = await executeQuery('SELECT * FROM users WHERE email = ?', [username]);
   if (rows.length === 0) return done(null, false, { message: 'Incorrect username.' });
   const user = rows[0];
   const match = await bcrypt.compare(password, user.password);
   if (!match) return done(null, false, { message: 'Incorrect password.' });
-  // Fetch channel_id for user
-  const [channels] = await executeQuery('SELECT id FROM channels WHERE user_id = ?', [user.id]);
-  user.channel_id = channels.length ? channels[0].id : null;
   return done(null, user);
     } catch (err) {
       return done(err);
@@ -201,6 +205,7 @@ app.use('/', indexRouter);
 app.use('/auth/', googleRouter);
 app.use('/api', shareFormRouter);
 app.use('/', shareFormRouter);
+app.use('/users', usersRouter);
 
 const saveFormRouter = require('./routes/saveForm');
 const saveFormBuilderRouter = require('./routes/saveFormBuilder');
@@ -210,8 +215,10 @@ app.get('/submissions', (req, res) => {
   res.render('submission_table', { logo_url: process.env.LOGO_URL });
 });
 // API: Get all forms
-app.get('/api/forms', async (req, res) => {
-  const [rows] = await executeQuery('SELECT id, name FROM forms ORDER BY id DESC');
+app.get('/api/forms',ensureAuthenticated, async (req, res) => {
+  let channel_id = req.session.channel_id || null;
+  let user_id = req.session.user_id || null;
+  const [rows] = await executeQuery('SELECT id, name FROM forms where channel_id= ? ORDER BY id DESC', [channel_id]);
   res.json(rows);
 });
 
