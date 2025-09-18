@@ -33,7 +33,7 @@ router.post('/login', passport.authenticate('local', {
     req.login(user, function(err) {
       if (err) {
         console.error('Passport login error:', err);
-        return res.status(500).json({ error: 'Internal server error.' });
+        return res.status(500).json({ error: 'Internal server error.' + err.message });
       }
       // Optionally set additional session properties
       req.session.user_id = user.id;
@@ -42,7 +42,7 @@ router.post('/login', passport.authenticate('local', {
     });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'Internal server error.' });
+    return res.status(500).json({ error: 'Internal server error.' + err.message });
   }
 });
 
