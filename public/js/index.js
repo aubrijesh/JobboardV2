@@ -257,13 +257,55 @@ $(document).ready(function() {
                 var tmpl = (formTemplates || []).find(t => t.id === tmplId);
                 if (tmpl) {
                     // Replace droppedFields and re-render form
+                    let jobdesc = tmpl.jobdesc;
                     droppedFields = tmpl.fields.map((f, idx) => {
                         const field = Object.assign({}, f);
                         // Generate unique id: type + timestamp + idx
-                        field.id = field.id || (field.type + '_' + Date.now() + '_' + idx);
+                        field.id = field.id || (field.type);
                         return field;
                     });
                     $('#job-form').empty();
+                    if(jobdesc) {
+                        if ($('#jobdesc-editor').length) {
+                            if(window.jobdescQuill) {
+                                jobdescQuill.clipboard.dangerouslyPasteHTML(jobdesc);
+                                //window.jobdescQuill.root.innerHTML = jobdesc;
+                            } else {
+                                $('#jobdesc-editor').html(jobdesc);
+                                window.jobdescQuill = new Quill('#jobdesc-editor', {
+                                    theme: 'snow',
+                                    modules: {
+                                        toolbar: [
+                                            [{ header: [1, 2, false] }],
+                                            ['bold', 'italic', 'underline'],
+                                            ['link', 'blockquote', 'code-block', 'image'],
+                                            [{ list: 'ordered' }, { list: 'bullet' }]
+                                        ]
+                                    }
+                                });
+                                window.jobdescQuill.on('text-change', function() {
+                                    var jobdesc = window.jobdescQuill.root.innerHTML;
+                                    var formId = getFormId();
+                                    $.ajax({
+                                        url: '/api/forms/' + formId + '/jobdesc',
+                                        method: 'POST',
+                                        data: { jobdesc: jobdesc },
+                                        success: function(res) {
+                                            Toastify({
+                                                text: "Saved",
+                                                duration: 1200,
+                                                gravity: "top",
+                                                position: "right",
+                                                backgroundColor: "#28a745"
+                                            }).showToast();
+                                        }
+                                    });
+                                });
+                            }
+                        }
+                    }
+
+
 
                     droppedFields.forEach(field => {
                         $('#job-form').append(getFieldHtml(field));
@@ -273,24 +315,25 @@ $(document).ready(function() {
                         if(window.quillEditors) { Object.values(window.quillEditors).forEach(q => q && q.root && (q.root.innerHTML = '')); }
                         droppedFields.forEach(function(field) {
                             if(field.type === 'editor') {
-                var quill = new Quill(`#${field.id}`, {
-                    theme: 'snow',
-                    modules: {
-                        toolbar: [
-                            [{ header: [1, 2, false] }],
-                            ['bold', 'italic', 'underline'],
-                            ['link', 'blockquote', 'code-block', 'image'],
-                            [{ list: 'ordered' }, { list: 'bullet' }]
-                        ]
-                    }
-                });
+                            var quill = new Quill(`#${field.id}`, {
+                                theme: 'snow',
+                                modules: {
+                                    toolbar: [
+                                        [{ header: [1, 2, false] }],
+                                        ['bold', 'italic', 'underline'],
+                                        ['link', 'blockquote', 'code-block', 'image'],
+                                        [{ list: 'ordered' }, { list: 'bullet' }]
+                                    ]
+                                }
+                            });
                             if (field.value) {
                                 quill.clipboard.dangerouslyPasteHTML(field.value);
                             }
-                window.quillEditors = window.quillEditors || {};
-                window.quillEditors[field.id] = quill;
+                            window.quillEditors = window.quillEditors || {};
+                            window.quillEditors[field.id] = quill;
                             }
                         });
+                        saveFormBuilderState();
                     }, 0);
                     $.modal.close();
                     UIHelper.updateDropPlaceholder();

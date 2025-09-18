@@ -19,23 +19,57 @@ const formTemplates = [
     id: 'senior_software_engineer',
     name: 'Senior Software Engineer',
     description: 'A template for senior software engineering job applications.',
-    jobdesc: `<h2>Senior Software Engineer</h2>
-<p>Tech Solutions Inc. is seeking a Senior Software Engineer to lead the development of our next-generation cloud platform. You will architect, design, and implement scalable solutions using modern technologies. The ideal candidate is passionate about software craftsmanship, thrives in a collaborative environment, and is eager to mentor junior engineers.</p>
+    jobdesc: `<h1>Senior Software Engineer</h1>
+<h3>About Tech Solutions Inc.</h3>
+<p>Tech Solutions Inc. is a global leader in cloud-based enterprise solutions, serving Fortune 500 clients and innovative startups alike. Our mission is to empower businesses through scalable, secure, and intelligent technology platforms. We foster a culture of continuous learning, collaboration, and technical excellence.</p>
+
+<h3>Position Overview</h3>
+<p>We are seeking a highly experienced Senior Software Engineer to join our core engineering team. In this role, you will architect, design, and implement mission-critical systems that power our next-generation cloud platform. You will work closely with cross-functional teams to deliver robust, scalable, and high-performance solutions. This is an opportunity to make a significant impact on the direction of our technology and mentor the next generation of engineers.</p>
+
+<h3>Key Responsibilities</h3>
 <ul>
-  <li>Lead the design and development of distributed systems and microservices.</li>
-  <li>Collaborate with product managers, designers, and other engineers to deliver high-quality features.</li>
-  <li>Drive code reviews, best practices, and continuous improvement initiatives.</li>
-  <li>Mentor and coach junior team members.</li>
-  <li>Stay current with emerging technologies and industry trends.</li>
+  <li>Lead the end-to-end design and development of distributed systems, microservices, and APIs.</li>
+  <li>Architect scalable, secure, and maintainable solutions using Node.js, TypeScript, and modern cloud technologies (AWS, Azure, GCP).</li>
+  <li>Collaborate with product managers, UX/UI designers, and DevOps to deliver new features and enhancements.</li>
+  <li>Drive code reviews, enforce best practices, and champion clean code principles.</li>
+  <li>Mentor and coach junior and mid-level engineers, fostering a culture of technical excellence and continuous improvement.</li>
+  <li>Research and evaluate emerging technologies, tools, and frameworks to keep our stack cutting-edge.</li>
+  <li>Participate in architectural discussions, sprint planning, and technical roadmap development.</li>
+  <li>Ensure high standards of quality, reliability, and security in all deliverables.</li>
 </ul>
-<p><strong>Requirements:</strong></p>
+
+<h3>Required Qualifications</h3>
 <ul>
-  <li>Bachelor’s or Master’s degree in Computer Science or related field.</li>
-  <li>7+ years of experience in software engineering, with expertise in JavaScript, Node.js, and cloud platforms (AWS, Azure, GCP).</li>
-  <li>Proven experience with CI/CD, containerization (Docker, Kubernetes), and RESTful APIs.</li>
-  <li>Excellent problem-solving and communication skills.</li>
+  <li>Bachelor’s or Master’s degree in Computer Science, Engineering, or a related field.</li>
+  <li>7+ years of professional software engineering experience, with a strong background in backend and distributed systems.</li>
+  <li>Expertise in JavaScript, Node.js, and at least one typed language (TypeScript, Java, C#).</li>
+  <li>Hands-on experience with cloud platforms (AWS, Azure, or GCP), containerization (Docker, Kubernetes), and CI/CD pipelines.</li>
+  <li>Deep understanding of RESTful API design, microservices architecture, and database technologies (SQL and NoSQL).</li>
+  <li>Strong problem-solving skills, attention to detail, and a passion for building high-quality software.</li>
+  <li>Excellent communication skills and a collaborative mindset.</li>
 </ul>
-<p><strong>Benefits:</strong> Competitive salary, remote work options, health insurance, professional development budget, and more.</p>`,
+
+<h3>Preferred Qualifications</h3>
+<ul>
+  <li>Experience with event-driven architectures, message queues (Kafka, RabbitMQ), and real-time data processing.</li>
+  <li>Knowledge of security best practices, authentication/authorization, and compliance standards.</li>
+  <li>Contributions to open-source projects or technical blogs.</li>
+  <li>Experience mentoring or leading engineering teams.</li>
+</ul>
+
+<h3>Benefits</h3>
+<ul>
+  <li>Competitive salary and annual performance bonuses</li>
+  <li>Remote work options and flexible hours</li>
+  <li>Comprehensive health, dental, and vision insurance</li>
+  <li>Professional development budget and paid certifications</li>
+  <li>Generous paid time off and parental leave</li>
+  <li>Modern office space, team events, and more</li>
+</ul>
+
+<h3>How to Apply</h3>
+<p>Submit your application using the form below. Please include your resume, a cover letter highlighting your relevant experience, and links to your GitHub or portfolio if available. We look forward to learning how you can help shape the future of cloud technology at Tech Solutions Inc.</p>
+`,
     fields: [
       { type: 'h2', text: 'Application Form' },
       { type: 'name', label: 'Candidate Name', required: true },
