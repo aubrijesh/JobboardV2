@@ -11,8 +11,7 @@ router.get('/', function(req, res, next) {
 });
 
 // POST /login - Login with email and password only
-router.post('/login', passport.authenticate('local', {
-}), async (req, res) => {
+router.post('/login', async (req, res) => {
   let { email, username , password } = req.body;
   email = email || username; // Allow login with either email or username
   
