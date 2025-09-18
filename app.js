@@ -225,8 +225,9 @@ app.get('/api/forms',ensureAuthenticated, async (req, res) => {
 // API: Add new form
 app.post('/api/forms', async (req, res) => {
   
-  const channelId = req.session.channel_id || null;
-  const [result] = await executeQuery('INSERT INTO forms (name, channel_id) VALUES ("New Form", ?)', [channelId]);
+  const channelId = req.session.channel_id;
+  if(!channelId) return res.status(400).json({ error: 'No channel_id in session' });
+  const [result] = await executeQuery('INSERT INTO forms (name, channel_id) VALUES (\'New Form\', ?)', [channelId]);
   res.json({ success: true, id: result.insertId });
 });
 
