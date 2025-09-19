@@ -58,7 +58,7 @@ const fields = [
   { type: "name", label: "Name", required: true, inputType: "input", icon: "fa-solid fa-signature" },
   { type: "total_experience", label: "Total Experience", required: true, inputType: "input", icon: "fa-solid fa-briefcase" },
   { type: "relevant_experience", label: "Relevant Experience", required: true, inputType: "input", icon: "fa-solid fa-calculator" },
-  { type: "current_city", label: "Current City", required: true, inputType: "input", icon: "fa-solid fa-briefcase" },
+  { type: "current_city", label: "City", required: true, inputType: "input", icon: "fa-solid fa-briefcase" },
   { type: "job_title", label: "Job Title", required: true, inputType: "input", icon: "fa-solid fa-briefcase" },
   { type: "company_name", label: "Company", required: true, inputType: "input", icon: "fa-solid fa-building" },
   { type: "location", label: "Location", inputType: "input", icon: "fa-solid fa-location-dot" },
@@ -90,7 +90,7 @@ const fields = [
   },
   {
     type: "resume",
-    label: "Resume (PDF, DOCX, etc.)",
+    label: "Resume",
     accept: ".pdf,.doc,.docx,.txt,.rtf",
     inputType: "input",
     icon: "fa-solid fa-file-pdf"
@@ -108,7 +108,7 @@ const fields = [
   { type: "responsibilities", label: "Responsibilities", inputType: "input", icon: "fa-solid fa-list-check" },
   { type: "requirements", label: "Requirements", inputType: "input", icon: "fa-solid fa-list-ul" },
   { type: "phone", label: "Phone", inputType: "input", icon: "fa-solid fa-phone" },
-  { type: "highest_qualification", label: "Highest Qualification", inputType: "dropdown", icon: "fa-solid fa-graduation-cap",
+  { type: "highest_qualification", label: "Qualification", inputType: "dropdown", icon: "fa-solid fa-graduation-cap",
     options: [
         "Associate's Degree",
         "Bachelor's Degree",

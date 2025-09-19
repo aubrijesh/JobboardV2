@@ -214,6 +214,9 @@ app.use('/api', saveFormBuilderRouter);
 app.get('/submissions', (req, res) => {
   res.render('submission_table', { logo_url: process.env.LOGO_URL });
 });
+app.get('/form/submissions/:id', (req, res) => {
+  res.render('form_submissions', { logo_url: process.env.LOGO_URL });
+});
 // API: Get all forms
 app.get('/api/forms',ensureAuthenticated, async (req, res) => {
   let channel_id = req.session.channel_id || null;

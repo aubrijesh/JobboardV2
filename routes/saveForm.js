@@ -184,6 +184,40 @@ router.get('/submissions', async (req, res) => {
   }
 });
 
+router.get("/form/submissions/:id", async (req, res) => {
+  const formId = req.params.id;
+  const channelId = req.session.channel_id;
+  try {
+    const [rows] = await executeQuery(
+      `SELECT s.*, st.stage as stage,fs.name as spn
+      FROM submissions s
+      JOIN form_shares fs ON s.share_id = fs.id
+      JOIN stages st ON s.stage_id = st.id
+      JOIN forms f ON fs.formid = f.id AND f.channel_id = ?
+      WHERE f.id = ?`,
+      [channelId,formId]
+    );
+    if (!rows.length) return res.status(404).json({ success: false, error: 'Form not found' });
+    const [submission] = rows;
+    const data = submission.data;
+    const response = {
+      id: submission.id,
+      data: rows,
+      created_at: submission.created_at,
+      stage: submission.stage_name,
+      jobdesc: submission.jobdesc
+    };
+    res.json({ success: true, response });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'DB error' });
+  }
+
+});
+
+
+
+
 // POST /api/preview-submission
 router.post('/preview-submission', async (req, res) => {
   try {
