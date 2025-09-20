@@ -1,6 +1,8 @@
 <html>
 <head>
     <!-- Quill styles for public form -->
+     <link rel="stylesheet" 
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet" />
     <title>{{form.name}} - Public Form</title>
     <link rel="stylesheet" href="/css/index.css">
@@ -13,7 +15,6 @@
         }
         #public-job-form {
             width: 100%;
-            padding: 30px;
         }
         .quill-editor-container {
             border:none !important;
@@ -41,6 +42,31 @@
         }
         .tab-content.active {
             display: block;
+        }
+        #public-form-success {
+            display: none;
+            color: green;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+            height: 50%;
+            background-color: #f2f2f2;
+            border-radius: 10px;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+        }
+        #tab-content-overview > * {
+            line-height: 1.8;
+            font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
+        }
+        #tab-content-overview li,
+        #tab-content-overview p {
+            color: oklch(37.3% 0.034 259.733);
+        }
+        #tab-content-overview h3 {
+            margin-top: .5em;
+            margin-bottom: .5em;
         }
     </style>
 </head>
@@ -83,7 +109,9 @@
             </div>
             <button type="submit" style="margin-bottom: 30px; padding:10px 28px; background:#007bff; color:#fff; border:none; border-radius:5px; font-size:16px; font-weight:500; cursor:pointer; margin-top:18px;">Submit Application</button>
         </form>
-        <div id="public-form-success" style="display:none;margin-top:24px;color:green;font-weight:500;font-size:18px;">Thank you for your submission!</div>
+        <div id="public-form-success">
+            <i class="far fa-check-circle" style="margin-right: 10px;font-size: 20px"></i>
+            <span>Thank you for your submission!</span></div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -174,8 +202,35 @@
 
             var form = document.getElementById('public-job-form');
             var formDataObj = {};
-            // Collect all non-file fields into an object
-            $(form).serializeArray().forEach(function(f) { formDataObj[f.name] = f.value; });
+            // Helper to collect repeatable block data by data-id
+            function collectRepeatableBlocks(dataId, fieldMap) {
+                var arr = [];
+                $('[data-id="' + dataId + '"] .education-block').each(function() {
+                    var obj = {};
+                    for (var key in fieldMap) {
+                        var selector = fieldMap[key];
+                        var val = $(this).find(selector).val();
+                        obj[key] = val;
+                    }
+                    arr.push(obj);
+                });
+                return arr;
+            }
+            // Collect education blocks
+            var educationArr = collectRepeatableBlocks('education', {
+                education_name: 'input.education-name',
+                degree: 'select.education-degree',
+                percentage: 'input.education-percentage',
+                university: 'select.education-university'
+            });
+            if (educationArr.length) formDataObj.education = educationArr;
+            // TODO: Add similar logic for skills or other repeatable fields if needed
+            // Collect all non-repeat fields
+            $(form).serializeArray().forEach(function(f) {
+                // Skip repeatable fields already handled
+                if (/^(education_name|degree|percentage|university)_\d+$/.test(f.name)) return;
+                formDataObj[f.name] = f.value;
+            });
             var shareId = document.getElementById('share-id').value;
             var shareToken = window.location.pathname.split("/").pop(); // If shareId is actually the share_token, otherwise adjust accordingly
             var fd = new FormData();
@@ -253,7 +308,7 @@
             .then(resp => {
                 if (resp.success) {
                     $('#public-job-form').hide();
-                    $('#public-form-success').show();
+                    $('#public-form-success').css("display", "flex");
                 } else {
                     alert('Submission failed: ' + (resp.error || 'Unknown error'));
                     $('#public-job-form button[type=submit]').prop('disabled', false);

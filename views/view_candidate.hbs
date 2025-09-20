@@ -1,0 +1,125 @@
+<html>
+<head>
+    <title>Candidate Details</title>
+    <link rel="stylesheet" href="/css/index.css">
+    <style>
+        .candidate-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px #0001;
+            padding: 32px 28px;
+        }
+        .candidate-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+        .candidate-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #bdbdbd;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .candidate-info h2 {
+            margin: 0 0 6px 0;
+            font-size: 26px;
+            font-weight: 600;
+        }
+        .candidate-info .email {
+            color: #555;
+            font-size: 15px;
+        }
+        .candidate-section {
+            margin-bottom: 22px;
+        }
+        .candidate-section h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #6c63ff;
+        }
+        .candidate-section ul {
+            padding-left: 18px;
+        }
+        .candidate-section li {
+            margin-bottom: 6px;
+        }
+        .candidate-label {
+            font-weight: 500;
+            color: #333;
+            margin-right: 8px;
+        }
+        .candidate-value {
+            color: #444;
+        }
+        .candidate-edu-block {
+            background: #f7f8fa;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="candidate-container">
+        <div class="candidate-header">
+            <div class="candidate-avatar" id="candidate-avatar">
+                {{#if candidate.name}}
+                    {{#each (split candidate.name ' ')}}
+                        {{#if @first}}{{this.[0]}}{{/if}}
+                    {{/each}}
+                {{else}}
+                    A
+                {{/if}}
+            </div>
+            <div class="candidate-info">
+                <h2 id="candidate-name">{{candidate.name}}</h2>
+                <div class="email" id="candidate-email">{{candidate.email}}</div>
+            </div>
+        </div>
+        <div class="candidate-section" id="candidate-basic">
+            <h3>Basic Information</h3>
+            <ul id="candidate-basic-list">
+                {{#if candidate.phone}}<li><span class="candidate-label">Phone:</span> <span class="candidate-value">{{candidate.phone}}</span></li>{{/if}}
+                {{#if candidate.location}}<li><span class="candidate-label">Location:</span> <span class="candidate-value">{{candidate.location}}</span></li>{{/if}}
+            </ul>
+        </div>
+        <div class="candidate-section" id="candidate-education">
+            <h3>Education</h3>
+            <div id="candidate-education-list">
+                {{#each candidate.education}}
+                    <div class="candidate-edu-block">
+                        <b>{{education_name}}</b> ({{degree}})<br>
+                        <span class='candidate-label'>University:</span> <span class='candidate-value'>{{university}}</span><br>
+                        <span class='candidate-label'>Percentage:</span> <span class='candidate-value'>{{percentage}}</span>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+        <div class="candidate-section" id="candidate-skills">
+            <h3>Skills</h3>
+            <ul id="candidate-skills-list">
+                {{#each candidate.skills}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+        </div>
+        <div class="candidate-section" id="candidate-experience">
+            <h3>Experience</h3>
+            <ul id="candidate-experience-list">
+                {{#each candidate.experience}}
+                    <li><b>{{role}}</b> at <span class='candidate-label'>{{company}}</span> ({{years}} yrs)</li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

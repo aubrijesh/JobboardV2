@@ -1,0 +1,158 @@
+<!-- Submission Data Table Section -->
+<style>
+  .body {
+    font-size: 14px;
+    margin: 0;
+  }
+  .kanban-item {
+    border-radius: 5px;
+    padding: 0 !important;
+    box-shadow: 1px 1px 5px #d4c8c8;
+  }
+  .kanban-item > div{
+    border-radius:6px;padding:10px 12px;margin-bottom:8px;cursor:pointer;
+  }
+  .kanban-board {
+    border: 1px solid #e1e1e1;
+    background: white !important;
+    margin: 0 10px 10px 0 !important;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  /*
+    'Backlog': '#e0e0e0',
+            'To Do': '#e57373',
+            'In Progress': '#42a5f5',
+            'Complete': '#66bb6a',
+            'Screening': '#f9c74f',
+            'Interview': '#90be6d',
+            'Offer': '#43aa8b',
+            'Hired': '#577590',
+            'Rejected': '#f94144'
+  */
+
+    .kanban-stage {
+        flex:1;min-width:220px;background:#fafbfc;border-radius:8px;box-shadow:0 2px 8px #0001;display:flex;flex-direction:column;
+    }
+  .kanban-board[data-id=Screening] .kanban-title-board > div {
+    color: #f9c74f !important;
+    border-bottom: 3px solid #f9c74f !important;
+    background-color: white !important;
+  }
+  .kanban-board[data-id=Complete] .kanban-title-board > div {
+    color: #66bb6a !important;
+    border-bottom: 3px solid #66bb6a !important;
+    background-color: white !important;;
+  }
+  .kanban-board[data-id=Interview] .kanban-title-board > div {
+    color: #90be6d !important;
+    border-bottom: 3px solid #90be6d !important;
+    background-color: white !important;
+  }
+  .kanban-board[data-id=Offer] .kanban-title-board > div {
+    color: #43aa8b !important;
+    border-bottom: 3px solid #43aa8b !important;
+        background-color: white !important;
+
+  }
+  .kanban-board[data-id=Hired] .kanban-title-board > div {
+    color: #577590 !important;
+    border-bottom: 3px solid #577590 !important;
+        background-color: white !important;
+
+  }
+  .kanban-board[data-id=Rejected] .kanban-title-board > div {
+    color: #f94144 !important;
+    border-bottom: 3px solid #f94144 !important;
+        background-color: white !important;
+
+  }
+  .kanban-board-header {
+    padding:16px 12px 10px 12px;border-top-left-radius:8px;border-top-right-radius:8px;display:flex;align-items:center;justify-content:space-between;
+  }
+
+  .kanban-board-header.kanban-stage {
+    padding:0;
+  }
+  .kanban-board header .kanban-title-board > div {
+    padding: .5em;
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+    font-weight: bold;
+}
+  .kanban-board-header .kanban-title-board {
+    padding: 12px;
+    /* border-radius: 0px; */
+    color: #fff;
+    text-align: center;
+    font-weight: 600;
+    width: 100%;
+  }
+  .jtabs-content {
+    overflow-x: auto;
+    height: calc(100% - 80px);
+  }
+  #candidate-sidebar.open {
+    transform: translateX(0) !important;
+  }
+  .profile-key-val {
+    margin-top:2px;
+  }  
+    span.key1,
+    span.key2 {
+        font-size: 14px;
+        font-weight: bold !important;
+        color: #8d8d8d;
+        min-width: 25%;
+    }
+    span.value1,
+    span.value2 {
+        font-size: 14px;
+        color: #8d8d8d;
+        min-width: 25%;
+    }
+    span.value1 .fa-solid,
+    span.value2 .fa-solid,
+    span.value1 .fa-regular,
+    span.value2 .fa-regular {
+        font-size: 12px;
+    }
+</style>
+<link href="https://cdn.jsdelivr.net/npm/jsoneditor/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://jsuites.net/v5/jsuites.css" type="text/css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jkanban@1.3.1/dist/jkanban.min.css">
+<link rel="stylesheet" href="https://bossanova.uk/jspreadsheet/v5/jspreadsheet.css" type="text/css" />
+<div id="submission-table-container">
+  <div class="header" style="display: flex;align-items:center;justify-content:space-between;">
+    <div class="left" style="display: flex;align-items:center;">
+      <div class="logo-block" style="width: 60px; display: flex; flex-direction: column; gap: 8px;">
+          <img src="{{{logo_url}}}" alt="logo" style="width: 60%;padding: 10px;">
+      </div>
+      <h3 style="margin: 0;font-weight:600;color:#222;">Submissions</h3>
+    </div>
+    <button id="show-kanban-btn" style="margin-left:18px;background:#3498db;color:#fff;border:none;border-radius:3px;padding:6px 18px;cursor:pointer;">Kanban</button>
+  </div>
+  
+  <div id="jspreadsheet"></div>
+</div>
+<!-- jspreadsheet CDN -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://bossanova.uk/jspreadsheet/v5/jspreadsheet.js"></script>
+<script src="https://jsuites.net/v5/jsuites.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsoneditor/dist/jsoneditor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jkanban@1.3.1/dist/jkanban.min.js"></script>
+<script src="/js/form_submissions.js"></script>
+
+
+<div id="submission-kanban-sidebar" style="display:none;position:fixed;top:0;right:0;width:70vw;height:100vh;background:#fff;z-index:9999;box-shadow:-2px 0 16px rgba(0,0,0,0.12);overflow-y:auto;transition:right 0.3s;">
+  <div style="padding:18px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;">
+    <span style="font-size:20px;font-weight:600;">Candiates</span>
+    <button id="kanban-close-btn" style="background:#e74c3c;color:#fff;border:none;border-radius:3px;padding:6px 18px;cursor:pointer;">Close</button>
+  </div>
+  <div id="jkanban-board-content" style="padding:5px;"></div>
+</div>
+<script>
+// Example usage: renderJKanbanBoard(submissionsArray);
+</script>

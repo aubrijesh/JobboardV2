@@ -91,7 +91,7 @@ function renderAvailableFields() {
                 if (f) {
                     let label = f.label || f.text || (f.type.charAt(0).toUpperCase() + f.type.slice(1));
                     let iconHtml = f.icon ? `<i class="${f.icon}" style="margin-right:8px;"></i>` : "";
-                    $('#available-fields').append(`<div class="field-item" data-id="${f.id || f.type}">${iconHtml}${label}</div>`);
+                    $('#available-fields').append(`<div class="field-item" data-id="${f.id || f.type}"><div>${iconHtml}</div><div class="name">${label}</div></div>`);
                 }
             });
         });
@@ -100,7 +100,7 @@ function renderAvailableFields() {
             const key = f.id || f.type;
             let label = f.label || f.text || (f.type.charAt(0).toUpperCase() + f.type.slice(1));
             let iconHtml = f.icon ? `<i class="${f.icon}" style="margin-right:8px;"></i>` : "";
-            $('#available-fields').append(`<div class="field-item" data-id="${key}">${iconHtml}${label}</div>`);
+            $('#available-fields').append(`<div class="field-item" data-id="${key}"><div>${iconHtml}</div><div class="name">${label}</div></div>`);
         });
     }
 }
@@ -401,7 +401,8 @@ $(document).ready(function() {
         });
         // Submissions option
         $('#show-submissions').on('click', function() {
-            window.open('/submissions', '_blank');
+             var formId = window.formId || (new URLSearchParams(window.location.search).get('id'));
+            window.open('/form/submissions/'+formId, '_blank');
             $('#settings-menu').hide();
         });
         // Use event delegation for share button to ensure handler works after dynamic DOM changes
