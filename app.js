@@ -226,9 +226,23 @@ app.get('/form/submissions/:id', (req, res) => {
 });
 // API: Get all forms
 app.get('/api/forms',ensureAuthenticated, async (req, res) => {
+
   let channel_id = req.session.channel_id || null;
   let user_id = req.session.user_id || null;
-  const [rows] = await executeQuery('SELECT id, name FROM forms where channel_id= ? ORDER BY id DESC', [channel_id]);
+  let query = `SELECT 
+    f.id, 
+    f.name, 
+    COUNT(s.id) AS s_count,
+    COUNT(DISTINCT fs.id) AS share_count
+FROM forms f
+LEFT JOIN form_shares fs 
+    ON f.id = fs.formid
+LEFT JOIN submissions s 
+    ON fs.id = s.share_id
+WHERE f.channel_id = ?
+GROUP BY f.id, f.name
+ORDER BY f.id DESC;`
+  const [rows] = await executeQuery(query, [channel_id]);
   res.json(rows);
 });
 

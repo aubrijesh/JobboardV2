@@ -20,21 +20,41 @@
             display: none;
         }
         .rename-form-btn,
-        .edit-form-btn {
-            background: white;
-            /* color: #fff; */
-            border: 1px solid #E1E1E1;
-            /* border-radius: 3px; */
-            padding: 4px 10px;
-            border-radius: 5px;
-            cursor: pointer;
+        .edit-form-btn,
+        .view-data-btn {
+             cursor: pointer;
+             outline: none;
+             border: none;
+             background-color: transparent;
+             border-radius: 5px;
+        }
+        .rename-form-btn:hover,
+        .edit-form-btn:hover,
+        .view-data-btn:hover {
+            background-color: #f0f0f0;
         }
         .rename-form-btn {
             color: blue;
         }
+        .view-data-btn {
+            font-size: 12px;;
+        }
+        .view-data-btn i,
         .rename-form-btn i {
-            margin-right: 6px;
+            margin-right: 2px;
             font-size: 10px;
+            /* color: #fff; */
+            border: 1px solid #E1E1E1;
+            /* border-radius: 3px; */
+            padding: 4px;
+            border-radius: 50%;
+            
+        }
+        .line {
+            height: 100%;
+            width: 1px;
+            border-right: 1px solid #E1E1E1;
+            margin: 0 10px;
         }
         .save-form-btn {
             background: #28a745;
@@ -48,6 +68,19 @@
             color: #e74c3c;
             border: none;
             cursor: pointer;
+        }
+        span.text {
+            font-size: 12px;
+            color: #333;
+        }
+        span.count {
+            FONT-SIZE: 12PX;
+            COLOR: BLUE;
+            BACKGROUND-COLOR: WHITE;
+            BORDER: 1PX SOLID #E1E1E1;
+            width: 30px;
+            padding: 5px;
+            BORDER-RADIUS: 50%;
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -74,8 +107,9 @@
             <table style="width:100%;border-collapse:collapse;">
                 <thead>
                     <tr style="background:#f8f9fa;">
-                        <th style="padding:10px 8px;text-align:left;">ID</th>
+                        <th style="padding:10px 8px;text-align:left;">Index</th>
                         <th style="padding:10px 8px;text-align:left;">Name</th>
+                        <th style="padding:10px 8px;text-align:left;">Activity</th>
                         <th style="padding:10px 8px;text-align:left;">Actions</th>
                     </tr>
                 </thead>
@@ -84,6 +118,7 @@
                       <tr class="form-row" data-id="{{id}}">
                         {{!-- <td>{{id}}</td> --}}
                         <td>{{name}}</td>
+                        <td><a href="form/submissions/54" >Submission (5)</a></td>
                         <td>
                           <button class="delete-form-btn" data-id="{{id}}" style="background:#e74c3c;color:#fff;border:none;border-radius:3px;padding:4px 10px;cursor:pointer;">Delete</button>
                         </td>

@@ -148,12 +148,34 @@
 
 
 <div id="submission-kanban-sidebar" style="display:none;position:fixed;top:0;right:0;width:70vw;height:100vh;background:#fff;z-index:9999;box-shadow:-2px 0 16px rgba(0,0,0,0.12);overflow-y:auto;transition:right 0.3s;">
-  <div style="padding:18px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;">
-    <span style="font-size:20px;font-weight:600;">Candiates</span>
+  <div style="padding:18px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;gap:18px;">
+    <div style="display:flex;align-items:center;gap:18px;">
+      <span style="font-size:20px;font-weight:600;">Candidates</span>
+      <input id="kanban-search" type="text" placeholder="Search candidates..." style="padding:6px 14px;border:1px solid #ccc;border-radius:16px;font-size:15px;width:220px;outline:none;" />
+    </div>
     <button id="kanban-close-btn" style="background:#e74c3c;color:#fff;border:none;border-radius:3px;padding:6px 18px;cursor:pointer;">Close</button>
   </div>
   <div id="jkanban-board-content" style="padding:5px;"></div>
 </div>
 <script>
+// Kanban search logic
+let allKanbanSubmissions = [];
+$(document).on('input', '#kanban-search', function() {
+  const q = $(this).val().toLowerCase();
+  if (!window.submissionsArray) return;
+  if (!allKanbanSubmissions.length) allKanbanSubmissions = window.submissionsArray;
+  let filtered = allKanbanSubmissions.filter(sub => {
+    let name = (sub.data && (sub.data.name || ''));
+    let email = (sub.data && (sub.data.email || ''));
+    return name.toLowerCase().includes(q) || email.toLowerCase().includes(q);
+  });
+  $('#jkanban-board-content').html('');
+  window.renderJKanbanBoard(filtered);
+});
+// Reset search when Kanban is opened
+$(document).on('click', '#show-kanban-btn', function() {
+  $('#kanban-search').val('');
+  allKanbanSubmissions = window.submissionsArray || [];
+});
 // Example usage: renderJKanbanBoard(submissionsArray);
 </script>
