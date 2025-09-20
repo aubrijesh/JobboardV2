@@ -5,7 +5,20 @@ $(document).ready(function() {
             forms.forEach((f,index) => {
                 html += `<tr>
                     <td>${index + 1}</td>
-                    <td><span contenteditable="false" class="form-name-input" data-id="${f.id}" style="width:90%" >${f.name || ''}</span></td>
+                    <td>
+                        <span contenteditable="false" class="form-name-input" data-id="${f.id}" style="width:90%" >${f.name || ''}</span>
+                    </td>
+                    <td>
+                    <div>
+                        <img src="images/heartbeat.svg" style="height: 20px"/>
+                        <div class="states">
+                            <span class="text">Submissions</span>
+                            <span class="count">${f.s_count || 0}</span>
+                            <span class="text">Shares</span>
+                            <span class="count">${f.share_count || 0}</span>
+                        </div>
+                    </div>
+                    </td>
                     <td>
                         <button class="rename-form-btn" data-id="${f.id}">
                         <i class="fa-solid fa-pencil"></i>
@@ -13,9 +26,12 @@ $(document).ready(function() {
                         </button>
                         <button class="save-form-btn hide" data-id="${f.id}">Save</button>
                         <button class="edit-form-btn" data-id="${f.id}">Open</button>
+                       
                         <button class="delete-form-btn" data-id="${f.id}">
                             <i class="fa-solid fa-trash"></i>
                         </button>
+                        <span class="line"></span>
+                        <a class="view-data-btn" href="/form/submissions/${f.id}" target='_blank' ><i class="fa-solid fa-arrow-right" style="margin-right: 5px"></i>View data</a>
                     </td>
                 </tr>`;
             });
