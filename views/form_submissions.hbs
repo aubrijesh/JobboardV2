@@ -6,23 +6,80 @@
   }
   .kanban-item {
     border-radius: 5px;
-    padding: 0 !important;  
+    padding: 0 !important;
+    box-shadow: 1px 1px 5px #d4c8c8;
+  }
+  .kanban-item > div{
+    border-radius:6px;padding:10px 12px;margin-bottom:8px;cursor:pointer;
   }
   .kanban-board {
-    border: 1px solid white;
-    background: #607D8B;
-    margin: 0;
-    /* border-radius: 5px; */
-    margin: 0 !important;
+    border: 1px solid #e1e1e1;
+    background: white !important;
+    margin: 0 10px 10px 0 !important;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
   }
+
+  /*
+    'Backlog': '#e0e0e0',
+            'To Do': '#e57373',
+            'In Progress': '#42a5f5',
+            'Complete': '#66bb6a',
+            'Screening': '#f9c74f',
+            'Interview': '#90be6d',
+            'Offer': '#43aa8b',
+            'Hired': '#577590',
+            'Rejected': '#f94144'
+  */
+
+    .kanban-stage {
+        flex:1;min-width:220px;background:#fafbfc;border-radius:8px;box-shadow:0 2px 8px #0001;display:flex;flex-direction:column;
+    }
+  .kanban-board[data-id=Screening] .kanban-title-board > div {
+    color: #f9c74f !important;
+    border-bottom: 3px solid #f9c74f !important;
+    background-color: white !important;
+  }
+  .kanban-board[data-id=Complete] .kanban-title-board > div {
+    color: #66bb6a !important;
+    border-bottom: 3px solid #66bb6a !important;
+    background-color: white !important;;
+  }
+  .kanban-board[data-id=Interview] .kanban-title-board > div {
+    color: #90be6d !important;
+    border-bottom: 3px solid #90be6d !important;
+    background-color: white !important;
+  }
+  .kanban-board[data-id=Offer] .kanban-title-board > div {
+    color: #43aa8b !important;
+    border-bottom: 3px solid #43aa8b !important;
+        background-color: white !important;
+
+  }
+  .kanban-board[data-id=Hired] .kanban-title-board > div {
+    color: #577590 !important;
+    border-bottom: 3px solid #577590 !important;
+        background-color: white !important;
+
+  }
+  .kanban-board[data-id=Rejected] .kanban-title-board > div {
+    color: #f94144 !important;
+    border-bottom: 3px solid #f94144 !important;
+        background-color: white !important;
+
+  }
+  .kanban-board-header {
+    padding:16px 12px 10px 12px;border-top-left-radius:8px;border-top-right-radius:8px;display:flex;align-items:center;justify-content:space-between;
+  }
+
   .kanban-board-header.kanban-stage {
     padding:0;
   }
   .kanban-board header .kanban-title-board > div {
+    padding: .5em;
     border-top-left-radius: 10px !important;
     border-top-right-radius: 10px !important;
+    font-weight: bold;
 }
   .kanban-board-header .kanban-title-board {
     padding: 12px;
@@ -30,15 +87,19 @@
     color: #fff;
     text-align: center;
     font-weight: 600;
+    width: 100%;
   }
   .jtabs-content {
     overflow-x: auto;
     height: calc(100% - 80px);
   }
+  #candidate-sidebar.open {
+    transform: translateX(0) !important;
+  }
 </style>
 <link href="https://cdn.jsdelivr.net/npm/jsoneditor/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="https://jsuites.net/v5/jsuites.css" type="text/css" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jkanban@1.3.1/dist/jkanban.min.css">
 <link rel="stylesheet" href="https://bossanova.uk/jspreadsheet/v5/jspreadsheet.css" type="text/css" />
 <div id="submission-table-container">

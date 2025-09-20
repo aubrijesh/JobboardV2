@@ -31,6 +31,10 @@ const exphbs = engine({
   helpers: {
     json: function(context) {
       return JSON.stringify(context);
+    },
+    split: function(str, delimiter) {
+      if (typeof str !== 'string' || !delimiter) return [];
+      return str.split(delimiter);
     }
   }
 });
@@ -265,6 +269,40 @@ app.get('/api/forms/:id/status', async (req, res) => {
   const [rows] = await executeQuery('SELECT status FROM forms WHERE id = ?', [req.params.id]);
   if (!rows.length) return res.status(404).json({ error: 'Form not found' });
   res.json(rows[0]);
+});
+
+app.get('/api/candidate/:id', async function(req, res, next) {
+  const submissionId = req.params.id;
+  try {
+    const [rows] = await executeQuery(
+      `SELECT s.*, st.stage as stage, fs.name as spn
+       FROM submissions s
+       JOIN form_shares fs ON s.share_id = fs.id
+       JOIN stages st ON s.stage_id = st.id
+       WHERE s.id = ?`,
+      [submissionId]
+    );
+    if (!rows.length) return res.status(404).send('Candidate not found');
+    const submission = rows[0];
+    let data = {};
+    try { data = submission.data } catch {}
+    // Flatten and map fields for the view
+    const candidate = {
+      name: data.name,
+      email: data.email || '',
+      phone: data.phone || '',
+      location: data.location || data.current_city || '',
+      education: data.education || [],
+      skills: data.skills || [],
+      experience: data.experience || [],
+      ...data
+    };
+    res.json({  candidate});
+    //res.render('view_candidate', { candidate });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
 });
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
