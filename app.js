@@ -213,8 +213,11 @@ app.use('/users', usersRouter);
 
 const saveFormRouter = require('./routes/saveForm');
 const saveFormBuilderRouter = require('./routes/saveFormBuilder');
+const actionsRouter = require('./routes/actions');
 app.use('/api', saveFormRouter);
 app.use('/api', saveFormBuilderRouter);
+app.use('/api', actionsRouter);
+
 app.get('/submissions', (req, res) => {
   res.render('submission_table', { logo_url: process.env.LOGO_URL });
 });

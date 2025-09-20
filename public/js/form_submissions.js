@@ -549,15 +549,20 @@ $(document).ready(function() {
                         + `</div>`
                         
                     + `</div>`
-                    + `<div style='margin-top:8px;font-size:13px;color:#444;'><span style='font-weight:500;'>Role:</span> ${sub.data.role || ''}</div>`
-                    + `<div style='margin-top:2px;font-size:13px;color:#444;'><span style='font-weight:500;'>Exp:</span> ${sub.data.experience_year || ''} yrs` 
-                        + (sub.data.skills ? `  <span style='font-weight:500;margin-left:12px;'>Skills:</span> ${Array.isArray(sub.data.skills) ? sub.data.skills.join(', ') : sub.data.skills}` : '')
+                    + `<div style='margin-top:10px'>`
+                    + `<div class="profile-key-val"><span class="key1" style='font-weight:500;'>Role:</span><span class="value1"> ${sub.data.role || ''}</span></div>`
+                    + `<div class="profile-key-val">
+                        <span class="key1" style='font-weight:500;'>Exp:</span> <span class="value1"><i class="fa-solid fa-calendar"></i>${sub.data.experience_year || ''} yrs</span>` 
+                        + (sub.data.skills ? `  <span class="key2" style='font-weight:500;margin-left:12px;'>Skills:</span> <span class="value2">${Array.isArray(sub.data.skills) ? sub.data.skills.join(', ') : sub.data.skills}</span>` : '')
                     + `</div>`
-                    + `<div style='margin-top:2px;font-size:13px;color:#444;'><span style='font-weight:500;'>Notice:</span> ${sub.data.notice_period || ''}`
-                        + (sub.data.location ? `  <span style='font-weight:500;margin-left:12px;'>Location:</span> ${sub.data.location}` : '')
+                    + `<div class="profile-key-val">
+                        <span class="key1" style='font-weight:500;'>Notice:</span> <span class="value1"><i class="fa-regular fa-calendar-days"></i>${sub.data.notice_period || ''}</span>`
+                        + (sub.data.location ? `  <span class="key2" style='font-weight:500;margin-left:12px;'>Location:</span> <span class="value2"><i class="fa-solid fa-location-dot"></i>${sub.data.location}</span>` : '')
                     + `</div>`
-                    + `<div style='margin-top:2px;font-size:13px;color:#888;'><span style='font-weight:500;'>Source:</span> ${sub.data.source || ''}`
-                        + (sub.data.last_update ? `  <span style='font-weight:500;margin-left:12px;'>Last Update:</span> ${sub.data.last_update}` : '')
+                    + `<div class="profile-key-val">
+                        <span class="key1" style='font-weight:500;'>Source:</span> <span class="value1">${sub.data.source || ''}</span>`
+                        + (sub.data.last_update ? `  <span class="key2" style='font-weight:500;margin-left:12px;'>Last Update:</span> <span class="value2">${sub.data.last_update}</span>` : '')
+                    + `</div>`
                     + `</div>`
                     + `<div class="actions" style="margin-top: 10px"><button class="view-candidate" title='View Profile' data-candidate-id='${sub.id}' style='border:1px solid #3498db;background:transparent;color:#3498db;font-size:13px;padding:3px 14px;border-radius:16px;cursor:pointer;transition:background 0.2s;margin-left:0;'>View</button></div>`
                     + `</div>`
