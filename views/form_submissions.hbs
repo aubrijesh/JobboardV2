@@ -118,6 +118,9 @@
     span.value2 .fa-regular {
         font-size: 12px;
     }
+    .hide {
+      display: none;
+    }
 </style>
 <link href="https://cdn.jsdelivr.net/npm/jsoneditor/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="https://jsuites.net/v5/jsuites.css" type="text/css" />
@@ -137,6 +140,10 @@
   </div>
   
   <div id="jspreadsheet"></div>
+  <div id="no-submissions-message hide" style="text-align:center;color:#777;padding:40px;">
+    <img src="/images/nodata.svg" alt="No data" style="width:120px;margin-bottom:20px;" />
+    <div>No submissions found.</div>
+  </div>
 </div>
 <!-- jspreadsheet CDN -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

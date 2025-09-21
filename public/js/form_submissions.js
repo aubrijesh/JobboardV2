@@ -99,14 +99,22 @@ $(document).ready(function() {
             fetch(`/api/form/submissions/${formId}`)
                 .then(res => res.json())
                 .then(data => {
-                    data = data.response.data;
-                    window.submissionsArray = data;
-                    // Refresh table
-                    renderTable(data);
-                    // Refresh Kanban if visible
-                    if ($('#submission-kanban-sidebar').is(':visible')) {
-                        renderJKanbanBoard(data);
+                    if(data.success) {
+                        $("#no-submissions-message").addClass('hide').text('');
+                        data = data.response.data;
+                        window.submissionsArray = data;
+                        // Refresh table
+                        renderTable(data);
+                        // Refresh Kanban if visible
+                        if ($('#submission-kanban-sidebar').is(':visible')) {
+                            renderJKanbanBoard(data);
+                        }
                     }
+                    else {
+                        $("#no-submissions-message").removeClass('hide').text('Error fetching submissions: ' + (data.error || 'Unknown error'));
+                        // alert('Error fetching submissions: ' + (data.error || 'Unknown error'));
+                    }
+                    
                 });
         });
     }
